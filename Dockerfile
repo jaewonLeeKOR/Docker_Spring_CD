@@ -12,8 +12,8 @@ COPY src ./src
 RUN ./gradlew bootJar
 
 # Stage 2 : Run
-# openjdk jre 를 이용하여 실행에 필요한 이미지만 설정
-FROM openjdk:jre-alpine
+# 실행을 위해 Amazon Corretto OpenJDK의 이미지 버전을 17로 설정
+FROM amazoncorretto:17-alpine-jdk
 
 # 작업 디렉토리를 /app으로 설정
 WORKDIR /app
