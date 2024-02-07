@@ -58,6 +58,10 @@ jobs:
             sudo apt-get update
             sudo apt-get install docker.io
             sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+            sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker --version
+            docker-compose --version
 
       - name: Deploy
         if: ${{ always() }}
@@ -69,7 +73,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN_READ_ONLY }}
-            docker-compose --env-file=.env -f docker-compose.yml -p backend up -d
-            docker container prune -f # 실행중이지 않은 컨테이너를 모두 종료시킴
-            docker image prune -a -f # 사용중이지 않은 이미지르 모두 삭제시킴
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN_READ_ONLY }}
+            sudo docker-compose --env-file=.env -f docker-compose.yml -p backend up -d
+            sudo docker container prune -f # 실행중이지 않은 컨테이너를 모두 종료시킴
+            sudo docker image prune -a -f # 사용중이지 않은 이미지르 모두 삭제시킴
