@@ -34,7 +34,33 @@ jobs:
           source: "docker-compose.yml, env/*"
           target: /home/ubuntu
 
+      - name: Check Docker
+        id: dockerChecker
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker --version
+            docker-compose --version
+
+      - name: Install Docker
+        if: ${{ failure() && steps.dockerChecker.conclusion == 'failure' }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install docker.io
+            sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+
       - name: Deploy
+        if: ${{ always() }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
