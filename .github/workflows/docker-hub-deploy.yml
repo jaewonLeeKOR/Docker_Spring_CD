@@ -74,6 +74,6 @@ jobs:
           script: |
             cd /home/ubuntu
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN_READ_ONLY }}
-            sudo docker-compose --env-file=.env -f docker-compose.yml -p backend up -d
+            sudo docker-compose --env-file=env/.env -f docker-compose.yml -p backend up -d
             sudo docker container prune -f # 실행중이지 않은 컨테이너를 모두 종료시킴
             sudo docker image prune -a -f # 사용중이지 않은 이미지르 모두 삭제시킴
