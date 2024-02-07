@@ -1,18 +1,27 @@
 services:
   spring-application:
     container_name: spring-application
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${DOCKER_USER_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+    restart: on-failure
     ports:
-      - 8080:8080
+      - ${SPRING_OUTER_PORT}:${SPRING_INNER_PORT}
+    depends_on:
+      - mysql-db
+    networks:
+      - docker-network
   mysql-db:
     container_name: mysql-db
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - 3306:3306
+      - ${MYSQL_OUTER_PORT}:${MYSQL_INNER_PORT}
+    networks:
+      - docker-network
+networks:
+  docker-network:
+    driver: bridge
