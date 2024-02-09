@@ -20,14 +20,21 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - ${MYSQL_OUTER_PORT}:${MYSQL_INNER_PORT}
     networks:
       - internal-network
 networks:
   external-network:
     driver: bridge
-    external: true
+    internal: false
   internal-network:
     driver: bridge
     internal: true
+    ipam:
+      driver: default
+      config:
+          - subnet: ${INTERNAL_NETWORK_SUBNET}
+            ip_range: ${INTERNAL_NETWORK_IP_RANGE}
+            gateway: ${INTERNAL_NETWORK_GATEWAY}
+            aux_addresses:
+              mysql-db: ${INTERNAL_NETWORK_AUX_ADDRESS_MYSQL}
+              spring-application: ${INTERNAL_NETWORK_AUX_ADDRESS_SPRING_APPLICATION}
