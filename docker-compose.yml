@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   spring-application:
     container_name: spring-application
@@ -8,7 +9,8 @@ services:
     depends_on:
       - mysql-db
     networks:
-      - docker-network
+      - internal-network
+      - external-network
   mysql-db:
     container_name: mysql-db
     image: mysql:latest
@@ -21,7 +23,11 @@ services:
     ports:
       - ${MYSQL_OUTER_PORT}:${MYSQL_INNER_PORT}
     networks:
-      - docker-network
+      - internal-network
 networks:
-  docker-network:
+  external-network:
     driver: bridge
+    external: true
+  internal-network:
+    driver: bridge
+    internal: true
